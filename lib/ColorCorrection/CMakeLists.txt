@@ -1,0 +1,49 @@
+﻿cmake_minimum_required(VERSION 3.16)
+
+project(ColorCorrection CXX)
+
+set(VISION_INCLUDE_DIRS  "${CMAKE_CURRENT_SOURCE_DIR}/include" CACHE STRING "" FORCE)
+#set(DC6000_INCLUDE_DIRS ${DC6000_INCLUDE_DIRS_LOCAL} )
+set(SOURCE_FILE
+    ${CMAKE_CURRENT_SOURCE_DIR}/src/ColorCorrection.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/ColorCorrection.h)
+
+add_library(${PROJECT_NAME} SHARED ${SOURCE_FILE} "src/shadingCorrection.cpp")
+
+message("CMAKE_CURRENT_SOURCE_DIR:" ${CMAKE_CURRENT_SOURCE_DIR})
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+${CMAKE_CURRENT_SOURCE_DIR}/include
+opencv_world
+)
+
+target_link_libraries(${PROJECT_NAME} PUBLIC
+opencv_world
+)
+
+
+# message(STATUS "OpenCV_INCLUDE_DIRS: ${OpenCV_INCLUDE_DIRS}")
+# message(STATUS "OpenCV_LIB_DIRS: ${OpenCV_LIBS}")
+
+
+message(CMAKE_LIBRARY_OUTPUT_DIRECTORY, ${CMAKE_LIBRARY_OUTPUT_DIRECTORY})
+
+
+install(TARGETS
+    ${PROJECT_NAME}
+    EXPORT ${PROJECT_NAME}-targets
+    RUNTIME DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}
+    LIBRARY DESTINATION ${CMAKE_LIBRARY_OUTPUT_DIRECTORY}
+    ARCHIVE DESTINATION ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}
+    INCLUDES DESTINATION include
+)
+
+install(EXPORT ${PROJECT_NAME}-targets
+    #NAMESPACE CAMERA::
+    FILE ${PROJECT_NAME}-config.cmake
+    DESTINATION ${CMAKE_INSTALL_PREFIX}/lib)
+
+install(DIRECTORY ${VISION_INCLUDE_DIRS}
+    DESTINATION ${CMAKE_INSTALL_PREFIX}
+)
+   message("sssssssssss" ${CMAKE_INSTALL_PREFIX}/lib/cmake/)
